@@ -5,4 +5,3 @@ dependencies:
   - scipy
   - numpy
   - python-constraint
-prefix: /Users/alonsoc1s/opt/miniconda3/envs/IDO
