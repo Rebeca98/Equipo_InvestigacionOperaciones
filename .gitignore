@@ -2,3 +2,6 @@
 .vscode/
 .DS_Store
 .nvimlog
+.DS_Store
+proyecto/mats/Argentina.npy
+proyecto/mats/Canada.npy
