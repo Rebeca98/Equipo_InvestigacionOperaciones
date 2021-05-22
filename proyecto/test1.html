@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Juanito" />
+  <meta name="author" content="Alonso" />
+  <meta name="author" content="Rebe" />
+  <title>Prueba</title>
+  <style>
+    html {
+      line-height: 1.5;
+      font-family: Georgia, serif;
+      font-size: 20px;
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      word-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 1em;
+      }
+    }
+    @media print {
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, 'Lucida Console', Consolas, monospace;
+      font-size: 85%;
+      margin: 0;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  
+  
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Prueba</h1>
+<p class="author">Juanito</p>
+<p class="author">Alonso</p>
+<p class="author">Rebe</p>
+</header>
+<h1 id="implementación">Implementación</h1>
+<p>El algoritmo Simplex modificado que decidimos implementar es el conocido como el método de la gran M. Con esta implementación podemos resolver cualquier Problema de Programación Lineal (PPL) bien definido, con el origen incluido o exluido del polítopo factible. Elegimos el método de la gran M en vez de las dos fases por su facilidad de implementación, y dado que al ser una implementación computacional, manipular una M considerablemente grande no afecta la velocidad de ejecución puesto que en el estándar IEEE de tipo de datos <em>float</em>, la multiplicación entre números toma el mismo tiempo sin importar el tamaño del número, lo cual nos permitió elegir M suficientemente grande para asegurar que el método fuese exitoso.</p>
+<p>Para implementar el algoritmo Simplex dividimos el algoritmo en pequeñas subrutinas, cada una independiente de las demás, siguiendo la filosofía de diseño Unix. Para referirnos a cada una de estas subrutinas, escribimos su nombre en <code>este formato</code> para acentuar su papel como programas.</p>
+<p>Cabe mencionar que por brevedad, reducimos la cantidad de detalles presentados en el pseudocódigo que mostramos a continuación. Para más detalles, se puede consultar el código que se entrega con el proyecto.</p>
+<h2 id="pivoteo">Pivoteo</h2>
+<p>Para el proceso básico de identificar pivotes según la regla de Bland, y después hacer un uno principal en el pivote identificado sobre la tabla, usamos dos subrutinas: una que encuentra el pivote y otra que hace la operación de pivoteo.</p>
+<p>El algoritmo de pivoteo está inspirado en la idea de una factorización LU “incompleta”. Calcular la factorización LU equivale a encontrar una matriz L que encodifica todo el proceso de pivoteo del Gauss-Jordan. Usamos una estrategia similar pero para un solo pivote.</p>
+<p>Como se puede ver, no hay ningúna estructura de repetición en <code>pivotea</code>. Aprovechamos las propiedades de las matrices elementales y las optimizaciones del lenguaje <span class="smallcaps">Matlab</span> para hacer el algoritmo lo más rápido y eficiente posible al crear unos principales en un solo paso en vez de buscar entrada por entrada candidatos y hacer divisiones renglón por renglón[^1].</p>
+<h2 id="algoritmo-simplex">Algoritmo Simplex</h2>
+<p>Con la subrutina <code>Simplexealo</code> implementamos el proceso de repetición del pivoteo hasta que se encuentra la tabla final, y además checamos las condiciones de terminación que nos permiten saber si el algoritmo Simplex terminó con soluciones óptimas, degeneradas, o si el polítopo factible del problema no está acotado.</p>
+<h1 id="benchmarking"><em>Benchmarking</em></h1>
+<p>Con el propósito de medir cuantitativamente el desemepeño de nuestra implementación del algoritmo Simplex con la regla de Bland, decidimos implementar una serie de pruebas diseñadas para medir el desempeño en el peor caso, y desempeño promedio, como es descrito en <span class="citation" data-cites="vanderbei">[@vanderbei]</span>.</p>
+<h2 id="análisis-de-peores-casos">Análisis de peores casos</h2>
+<p>Para medir el desempeño en el peor de los casos posibles, nos servimos de un problema conocido en la comunidad de optimización por sus propiedades: el problema de Klee-Minty, que es bien sabido toma una cantidad exponencial de pasos para resolver a medida que crece la dimensión. Como menciona <span class="citation" data-cites="murty">[@murty]</span>, el poliedro descrito por el problema de Klee-Minty de <span class="math inline"><em>d</em></span> dimensiones, es un poliedro con <span class="math inline">2<sup><em>d</em></sup></span> vértices, y en <span class="citation" data-cites="vanderbei">[@vanderbei]</span> se muestra que Simplex implementado con la regla de mayor descenso (distinta de Bland) toma <span class="math inline">2<sup><em>d</em></sup> − 1</span> iteraciones en terminar. Es decir, visita casi todos los vértices del poliedro. Ahora, con la Regla de Bland se prueba en <span class="citation" data-cites="chvatal">[@chvatal]</span> que el número de iteraciones está acotado por el <span class="math inline"><em>d</em></span>-ésimo número de Fibonacci[^2], que a su vez sigue creciendo más que polinomialmente.</p>
+<p>Para probar estos resultados teóricos y verificar la validez de nuestra implementación llevamos a cabo experimentos en los que resolvíamos el problema de programación lineal de Klee-Minty con punto inicial en el origen para <span class="math inline"><em>d</em></span> de 2 a 30[^3]. En la figura <a href="#fig:k-m-steps" data-reference-type="ref" data-reference="fig:k-m-steps">[fig:k-m-steps]</a> se puede ver una gráfica de dimensión del problema vs. el número de pasos que requiere nuestra implementación para llegar al punto óptimo del problema <span class="math inline">(0, …, <em>x</em><sub><em>d</em></sub>)</span> <span class="citation" data-cites="murty">[@murty]</span>. Nótese por favor que el eje del número de pasos está en escala logarítmica.</p>
+<p>Como se puede ver en la figura, para el problema K-M de dimensión 30 iniciando en el origen, se necesitan más de 2 millones de pasos! Para el PPL Klee-Minty de 30 dimensiones el tiempo que tardó para ser resuelto fue de 243.8 segundos[^4]: poco más de 4 minutos en un solo problema! Resulta de cierta forma escandaloso si pensamos que 30 variables de decisión y restricciones no es excesivamente grande para un problema de la vida real.</p>
+<h2 id="análisis-de-caso-promedio">Análisis de caso promedio</h2>
+<p>Para probar el desempeño en el caso promedio, simulamos problemas de dimensión <span class="math inline"><em>d</em></span> generando matrices de constantes, vectores de costos y restricciones aleatorias emulando el método utilizado en <span class="citation" data-cites="chvatal">[@chvatal]</span>. En la figura <a href="#fig:al-steps" data-reference-type="ref" data-reference="fig:al-steps">[fig:al-steps]</a> mostramos los resultados del mismo experimento: dimensión del problema vs. número de pasos para resolverlo, pero ahora con un problema de programación lineal generado aleatoriamente y el eje <span class="math inline"><em>y</em></span> en escala lineal. Cabe aclarar que en estos experimentos el PPL también se inicia en el origen.</p>
+<p>Como muestra la figura <a href="#fig:al-steps" data-reference-type="ref" data-reference="fig:al-steps">[fig:al-steps]</a>, el comportamiento del algoritmo para problemas generados aleatoriamente es radicalmente distinto: la linea ni siquiera es estrictamente creciente. La figura sugiere que la cantidad de pasos si va aumentando poco a poco, pero el tamaño de esta muestra es muy pequeña para asegurarlo.</p>
+<h2 id="análisis-de-caso-promedio-1">Análisis de caso promedio</h2>
+<p>Para tener una mejor idea del comportamiento en el caso promedio simulamos problemas de dimensión de hasta 500. En la figura <a href="#fig:caso_aleatorio" data-reference-type="ref" data-reference="fig:caso_aleatorio">1</a> (página ) mostramos una gráfica de dimensión del PPL vs. la cantidad de pasos que se necesitan para resolverlo en la gráfica superior, y el tiempo para resolver todo el problema en la gráfica inferior. Cada gráfica tiene su respectiva recta de regresión lineal.</p>
+<figure>
+<embed src="resources/img/analisis-500-rand.pdf" id="fig:caso_aleatorio" /><figcaption aria-hidden="true">Analisis de tiempo de compleción y pasos requeridos en caso aleatorio</figcaption>
+</figure>
+<p>La figura muestra que al aumentar las dimensiones, la cantidad de pasos requeridos para resolver el PPL no crece tan rápidamente. La recta de regresión lineal (apenas visible) sugiere que casi se quedan constantes. Sin embargo, la gráfica inferior que reporta el tiempo para resolver el PPL si muestra una claro incremento a en el tiempo a medida que aumentan las dimensiones. La recta de mínimos cuadrados sugiere una relación no-lineal. Dado que aumenta el tiempo para resolver, pero no necesariamente la cantidad de pasos, concluimos que el tiempo necesitado para cambiar variables y pasar de una s.b.f a otra requiere más tiempo.</p>
+<p>Podemos notar que el máximo tiempo de resolución para un PPL de dimensión hasta 500 es apenas menor que 0.5 segundos. Lo cual sugiere que en la práctica, incluso un problema con 500 variables de decisión y restricciones está al alcance de cómputo modesto.</p>
+</body>
+</html>
