@@ -9,7 +9,9 @@ bibliography: refs.bib
 
 ---
 header-includes:
-  - \usepackage{algorithm2e}
+  - \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+  - \SetKwRepeat{Do}{do}{while}
+  - \usepackage{mathtools}
 ---
 
 # Implementación
@@ -44,26 +46,29 @@ usamos dos subrutinas: una que encuentra el pivote y otra que hace la
 operación de pivoteo.
 
 \begin{algorithm}[H]
-\SetAlgoLined
 \KwResult{ individuo más apto de $P_k$ }
-
- \textbf{Inicializamos generación $0$}\;
- $k := 0$\\
- $P_k := $ población de $n$ individuos generados al azar; \\
- \textbf{Evaluar} $P_k:$\\
- \Do{el \underline{fitness} del individuo más apto en $P_k$ no sea lo suficientemente bueno}{
-      \textbf{Crear generación $k+1$}\;
-      \textbf{1. Copia:}\;
-      Seleccionar $ (1-\chi) \times  n$ miembros de $P_k$ e insertar en $P_{k+1}$\\
-      \textbf{2. Cruce $k+1$}\;
-      Seleccionar $ \chi \times  n$ miembros de $P_k$; emparejarlos; producir descendencia; insertar la descendencia en $P_{k+1}$\\
-      \textbf{3. Mutar:}\;
-      Seleccionar $ \mu \times  n$ miembros de $P_{k+1}$; invertir bits seleccionados al azar \\
-      \textbf{Evaluar $P_{k+1}$}\;
-      Calcular $ fitness(i) $ para cada $ i \in P_k$\\
-      \textbf{Incrementar: $k :=k+1$}\;
-    }
- \caption{GA($ n,\chi,\mu$) }
+\textbf{Inicializamos generación $0$}\;
+$k \coloneqq 0$\\
+$P_k \coloneqq $ población de $n$ individuos generados al azar; \\
+\textbf{Evaluar} $P_k:$\\
+\Do{el \underline{fitness} del individuo más apto en $P_k$ no sea
+lo
+suficientemente bueno}{
+	 \textbf{Crear generación $k+1$}\;
+	 \textbf{1. Copia:}\;
+	 Seleccionar $ (1-\chi) \times  n$ miembros de $P_k$ e insertar en
+	 $P_{k+1}$\\
+	 \textbf{2. Cruce $k+1$}\;
+	 Seleccionar $ \chi \times  n$ miembros de $P_k$; emparejarlos;
+	 producir descendencia; insertar la descendencia en $P_{k+1}$\\
+	 \textbf{3. Mutar:}\;
+	 Seleccionar $ \mu \times  n$ miembros de $P_{k+1}$; invertir bits
+	 seleccionados al azar \\
+	 \textbf{Evaluar $P_{k+1}$}\;
+	 Calcular $ fitness(i) $ para cada $ i \in P_k$\\
+	 \textbf{Incrementar: $k :=k+1$}\;
+}
+\caption{GA($ n,\chi,\mu$) }
 \end{algorithm}
 
 El algoritmo de pivoteo está inspirado en la idea de una factorización
@@ -86,8 +91,3 @@ del pivoteo hasta que se encuentra la tabla final, y además checamos las
 condiciones de terminación que nos permiten saber si el algoritmo
 Simplex terminó con soluciones óptimas, degeneradas, o si el polítopo
 factible del problema no está acotado.
-
-
-
-
-
