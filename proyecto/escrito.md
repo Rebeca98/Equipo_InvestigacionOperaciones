@@ -9,7 +9,6 @@ bibliography: refs.bib
 
 ---
 header-includes:
-  - \usepackage{nicefrac}
   - \usepackage{algorithm2e}
 ---
 
@@ -45,23 +44,26 @@ usamos dos subrutinas: una que encuentra el pivote y otra que hace la
 operación de pivoteo.
 
 \begin{algorithm}[H]
-\DontPrintSemicolon
 \SetAlgoLined
-\KwResult{Write here the result}
-\SetKwInOut{Input}{Input}\SetKwInOut{Output}{Output}
-\Input{Write here the input}
-\Output{Write here the output}
-\BlankLine
-\While{While condition}{
-    instructions\;
-    \eIf{condition}{
-        instructions1\;
-        instructions2\;
-    }{
-        instructions3\;
+\KwResult{ individuo más apto de $P_k$ }
+
+ \textbf{Inicializamos generación $0$}\;
+ $k := 0$\\
+ $P_k := $ población de $n$ individuos generados al azar; \\
+ \textbf{Evaluar} $P_k:$\\
+ \Do{el \underline{fitness} del individuo más apto en $P_k$ no sea lo suficientemente bueno}{
+      \textbf{Crear generación $k+1$}\;
+      \textbf{1. Copia:}\;
+      Seleccionar $ (1-\chi) \times  n$ miembros de $P_k$ e insertar en $P_{k+1}$\\
+      \textbf{2. Cruce $k+1$}\;
+      Seleccionar $ \chi \times  n$ miembros de $P_k$; emparejarlos; producir descendencia; insertar la descendencia en $P_{k+1}$\\
+      \textbf{3. Mutar:}\;
+      Seleccionar $ \mu \times  n$ miembros de $P_{k+1}$; invertir bits seleccionados al azar \\
+      \textbf{Evaluar $P_{k+1}$}\;
+      Calcular $ fitness(i) $ para cada $ i \in P_k$\\
+      \textbf{Incrementar: $k :=k+1$}\;
     }
-}
-\caption{While loop with If/Else condition}
+ \caption{GA($ n,\chi,\mu$) }
 \end{algorithm}
 
 El algoritmo de pivoteo está inspirado en la idea de una factorización
@@ -85,90 +87,7 @@ condiciones de terminación que nos permiten saber si el algoritmo
 Simplex terminó con soluciones óptimas, degeneradas, o si el polítopo
 factible del problema no está acotado.
 
-# *Benchmarking*
 
-Con el propósito de medir cuantitativamente el desemepeño de nuestra
-implementación del algoritmo Simplex con la regla de Bland, decidimos
-implementar una serie de pruebas diseñadas para medir el desempeño en el
-peor caso, y desempeño promedio, como es descrito en [@vanderbei].
 
-## Análisis de peores casos
 
-Para medir el desempeño en el peor de los casos posibles, nos servimos
-de un problema conocido en la comunidad de optimización por sus
-propiedades: el problema de Klee-Minty, que es bien sabido toma una
-cantidad exponencial de pasos para resolver a medida que crece la
-dimensión. Como menciona [@murty], el poliedro descrito por el problema
-de Klee-Minty de $d$ dimensiones, es un poliedro con $2^d$ vértices, y
-en [@vanderbei] se muestra que Simplex implementado con la regla de
-mayor descenso (distinta de Bland) toma $2^d-1$ iteraciones en terminar.
-Es decir, visita casi todos los vértices del poliedro. Ahora, con la
-Regla de Bland se prueba en [@chvatal] que el número de iteraciones está
-acotado por el $d$-ésimo número de Fibonacci[^2], que a su vez sigue
-creciendo más que polinomialmente.
 
-Para probar estos resultados teóricos y verificar la validez de nuestra
-implementación llevamos a cabo experimentos en los que resolvíamos el
-problema de programación lineal de Klee-Minty con punto inicial en el
-origen para $d$ de 2 a 30[^3]. En la figura
-[\[fig:k-m-steps\]](#fig:k-m-steps){reference-type="ref"
-reference="fig:k-m-steps"} se puede ver una gráfica de dimensión del
-problema vs. el número de pasos que requiere nuestra implementación para
-llegar al punto óptimo del problema $(0, \dots, x_d)$ [@murty]. Nótese
-por favor que el eje del número de pasos está en escala logarítmica.
-
-Como se puede ver en la figura, para el problema K-M de dimensión 30
-iniciando en el origen, se necesitan más de 2 millones de pasos! Para el
-PPL Klee-Minty de 30 dimensiones el tiempo que tardó para ser resuelto
-fue de 243.8 segundos[^4]: poco más de 4 minutos en un solo problema!
-Resulta de cierta forma escandaloso si pensamos que 30 variables de
-decisión y restricciones no es excesivamente grande para un problema de
-la vida real.
-
-## Análisis de caso promedio
-
-Para probar el desempeño en el caso promedio, simulamos problemas de
-dimensión $d$ generando matrices de constantes, vectores de costos y
-restricciones aleatorias emulando el método utilizado en [@chvatal]. En
-la figura [\[fig:al-steps\]](#fig:al-steps){reference-type="ref"
-reference="fig:al-steps"} mostramos los resultados del mismo
-experimento: dimensión del problema vs. número de pasos para resolverlo,
-pero ahora con un problema de programación lineal generado
-aleatoriamente y el eje $y$ en escala lineal. Cabe aclarar que en estos
-experimentos el PPL también se inicia en el origen.
-
-Como muestra la figura
-[\[fig:al-steps\]](#fig:al-steps){reference-type="ref" reference="fig:al-steps"}, el comportamiento del algoritmo para
-problemas generados aleatoriamente es radicalmente distinto: la linea ni
-siquiera es estrictamente creciente. La figura sugiere que la cantidad
-de pasos si va aumentando poco a poco, pero el tamaño de esta muestra es
-muy pequeña para asegurarlo.
-
-## Análisis de caso promedio
-
-Para tener una mejor idea del comportamiento en el caso promedio
-simulamos problemas de dimensión de hasta 500. En la figura
-[1](#fig:caso_aleatorio){reference-type="ref" reference="fig:caso_aleatorio"} (página ) mostramos una gráfica de
-dimensión del PPL vs. la cantidad de pasos que se necesitan para
-resolverlo en la gráfica superior, y el tiempo para resolver todo el
-problema en la gráfica inferior. Cada gráfica tiene su respectiva recta
-de regresión lineal.
-
-![Analisis de tiempo de compleción y pasos requeridos en caso
-aleatorio](resources/img/analisis-500-rand.pdf){#fig:caso_aleatorio
-width="\\textwidth"}
-
-La figura muestra que al aumentar las dimensiones, la cantidad de pasos
-requeridos para resolver el PPL no crece tan rápidamente. La recta de
-regresión lineal (apenas visible) sugiere que casi se quedan constantes.
-Sin embargo, la gráfica inferior que reporta el tiempo para resolver el
-PPL si muestra una claro incremento a en el tiempo a medida que aumentan
-las dimensiones. La recta de mínimos cuadrados sugiere una relación
-no-lineal. Dado que aumenta el tiempo para resolver, pero no
-necesariamente la cantidad de pasos, concluimos que el tiempo necesitado
-para cambiar variables y pasar de una s.b.f a otra requiere más tiempo.
-
-Podemos notar que el máximo tiempo de resolución para un PPL de
-dimensión hasta 500 es apenas menor que 0.5 segundos. Lo cual sugiere
-que en la práctica, incluso un problema con 500 variables de decisión y
-restricciones está al alcance de cómputo modesto.
