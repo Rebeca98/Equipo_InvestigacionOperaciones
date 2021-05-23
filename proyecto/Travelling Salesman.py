@@ -9,15 +9,21 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.11.1
 #   kernelspec:
-#     display_name: Python 3
-#     language: python
-#     name: python3
+#     display_name: 'Python 3.9.4 64-bit (''AnAp'': conda)'
+#     name: python394jvsc74a57bd0b51b1ace3c01efe6b1476470ed0211d96a9adc30e31e28e4cb788503ec9588a6
 # ---
 
+# +
 import matplotlib
+import tikzplotlib
 import matplotlib.pyplot as plt
+matplotlib.use('pgf')
 
-matplotlib.use("module://matplotlib-backend-kitty")
+plt.rcParams.update({
+    "pgf.texsystem": "pdflatex",
+    "font.family": "serif",
+    "font.serif": [],
+})
 
 plt.style.use("ggplot")
 
@@ -25,8 +31,10 @@ plt.style.use("ggplot")
 import numpy as np
 import numpy.linalg as la
 
+#matplotlib.use("module://matplotlib-backend-kitty")
 
-np.set_printoptions(threshold=0)
+#np.set_printoptions(threshold=0)
+np.random.seed(42)
 
 # %matplotlib inline
 # -
@@ -36,8 +44,14 @@ cities = cities[1:, 1:]
 n_cities = cities.shape[0]
 n_cities
 
-plt.scatter(cities[:, 0], cities[:, 1], marker=".")
+# +
+plt.scatter(cities[:, 0], cities[:, 1], marker="*")
+plt.title("Localizacion de ciudades (Qatar)")
 
+plt.savefig("qatar.pdf")
+
+
+# -
 
 def d(i, j):
     return np.linalg.norm(cities[i, :] - cities[j, :])
@@ -212,24 +226,76 @@ def GA(
         Pk = Pk_next
         if Pk[Pk.argmin()] < best_individual:
             best_individual = Pk[Pk.argmin()]
-
+        
         history.append(best_individual)
         # Imprimimos status
-        if verbose is True or k % print_interval == 0:
-            print(f"Generation {k}: {best_individual}")
+        #if verbose is True or k % print_interval == 0:
+            # print(f"Generation {k}: {best_individual}")
+            
+    return best_individual,history
 
-    return best_individual, history
-
-
-best_individual, history = GA(n_population=23, n_generation=10, verbose=True)
-
-history
-plt.plot(range(len(history)), [individual.fitness for individual in history])
 
 # + tags=[]
-best_individual, history = GA(
-    n_population=20, n_generation=10, greedy_rate=1 / 5, verbose=True
-)
+best_ga, hist_ga = GA(n_population=15, n_generation=10000)
+best_nn, hist_nn = GA(n_population=15, n_generation=10000, greedy_rate=9/10)
 # -
 
-history
+best_ga_sm, hist_ga_sm = GA(n_population=15, n_generation=10)
+best_nn_sm, hist_nn_sm = GA(n_population=15, n_generation=10, greedy_rate=9/10)
+
+# +
+fig, axs = plt.subplots(2, 2, figsize=(8,7))
+
+# Tour GA
+axs[0, 0].plot(cities[best_ga.genome][:, 0], cities[best_ga.genome][:, 1], "*")
+axs[0, 0].plot(cities[best_ga.genome][:, 0], cities[best_ga.genome][:, 1], "--")
+axs[0, 0].set_title("Tour (Alg. Genetico) 10k gens.")
+
+# Tour NN
+axs[0, 1].plot(cities[best_nn.genome][:, 0], cities[best_nn.genome][:, 1], "*")
+axs[0, 1].plot(cities[best_nn.genome][:, 0], cities[best_nn.genome][:, 1], "--")
+axs[0, 1].set_title("Tour (Hibrido) 10k gens.")
+
+# Tour NN chico
+axs[1, 0].plot(cities[best_ga_sm.genome][:, 0], cities[best_ga_sm.genome][:, 1], "*")
+axs[1, 0].plot(cities[best_ga_sm.genome][:, 0], cities[best_ga_sm.genome][:, 1], "--")
+axs[1, 0].set_title("Tour (Alg. Genetico) 10 gens.")
+
+# Tour NN chico
+axs[1, 1].plot(cities[best_nn_sm.genome][:, 0], cities[best_nn_sm.genome][:, 1], "*")
+axs[1, 1].plot(cities[best_nn_sm.genome][:, 0], cities[best_nn_sm.genome][:, 1], "--")
+axs[1, 1].set_title("Tour (Hibrido) 10 gens.")
+
+fig.tight_layout()
+
+plt.savefig("tours.pdf")
+
+# +
+fig, axs = plt.subplots(1, 2, figsize=(8,4))
+
+# Mejora GA
+axs[0].plot(range(len(hist_ga)), [ind.fitness for ind in hist_ga])
+axs[0].set_title("Mejora por generación (Alg. Genético)")
+
+# Mejora NN
+axs[1].plot(range(len(hist_nn)), [ind.fitness for ind in hist_nn])
+axs[1].set_title("Mejora por generación (Hibrido)")
+
+
+fig.tight_layout()
+
+plt.savefig("mejora.pdf")
+# -
+
+
+
+# +
+plt.plot(range(len(hist_ga)), [ind.fitness for ind in hist_ga], label="Alg. Genetico")
+plt.plot(range(len(hist_nn)), [ind.fitness for ind in hist_nn], label="Hibrido")
+plt.title("Distancia de ruta A. G vs. Hibrido")
+plt.legend()
+
+plt.savefig("comparacion.pdf")
+# -
+
+
