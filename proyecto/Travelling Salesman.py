@@ -9,18 +9,22 @@
 #       format_version: '1.5'
 #       jupytext_version: 1.11.1
 #   kernelspec:
-#     display_name: 'Python 3.9.4 64-bit (''AnAp'': conda)'
-#     name: python394jvsc74a57bd0b51b1ace3c01efe6b1476470ed0211d96a9adc30e31e28e4cb788503ec9588a6
+#     display_name: Python 3
+#     language: python
+#     name: python3
 # ---
 
 import matplotlib
 import matplotlib.pyplot as plt
 
+matplotlib.use("module://matplotlib-backend-kitty")
+
+plt.style.use("ggplot")
+
 # +
 import numpy as np
 import numpy.linalg as la
 
-matplotlib.use("module://matplotlib-backend-kitty")
 
 np.set_printoptions(threshold=0)
 
@@ -30,7 +34,7 @@ np.set_printoptions(threshold=0)
 cities = np.genfromtxt("csv/Qatar.csv", delimiter=",")
 cities = cities[1:, 1:]
 n_cities = cities.shape[0]
-cities
+n_cities
 
 plt.scatter(cities[:, 0], cities[:, 1], marker=".")
 
@@ -136,7 +140,6 @@ def greedy_popuation(n_population, ratio=1 / 2):
     population = population + [
         Individual(np.random.permutation(n_cities)) for _ in range(n_random)
     ]
-
     return np.array(population)
 
 
@@ -177,6 +180,7 @@ def GA(
     """
     # Para la generación 0
     # Pk = random_population(n_population)
+    history = []
     Pk = greedy_popuation(n_population, greedy_rate)
     best_individual = Pk[Pk.argmin()]
     for k in range(1, n_generation):
@@ -185,24 +189,22 @@ def GA(
         # Para seleccionar usamos wheel roulette selection
         # Calculamos la wheel probability
         wheel_prob = calculate_wheel_probability(Pk)
-
         # 1. Copy: seleccionamos (1 − cross_rate) × n individuos de Pk y los insertamos en Pk+1
         Pk_next = np.append(
             Pk_next,
             np.random.choice(
-                Pk, round((1 - cross_rate) * n_population), p=wheel_prob, replace=False
+                Pk, round((1 - cross_rate) * n_population), p=wheel_prob, replace=True
             ),
         )
-
         # 2. Crossover: seleccionamos (cross_rate * n) parejas de Pk y los cruzamos para añadirlos en Pk+1
         parejas = np.random.choice(
-            Pk, 2 * round(cross_rate * n_population), p=wheel_prob, replace=False
+            Pk, 2 * round(cross_rate * n_population), p=wheel_prob, replace=True
         ).reshape(-1, 2)
         Pk_next = np.append(Pk_next, [p.cross(q) for p, q in parejas])
 
         # 3. Mutate: seleccionamos mutate_rate de la población Pk+1 y la mutamos
         mutate_index = np.random.choice(
-            len(Pk_next), int(mutate_rate * len(Pk_next)), replace=False
+            len(Pk_next), int(mutate_rate * len(Pk_next)), replace=True
         )
         Pk_next[mutate_index] = np.array([x.mutate() for x in Pk_next[mutate_index]])
 
@@ -211,18 +213,23 @@ def GA(
         if Pk[Pk.argmin()] < best_individual:
             best_individual = Pk[Pk.argmin()]
 
+        history.append(best_individual)
         # Imprimimos status
         if verbose is True or k % print_interval == 0:
             print(f"Generation {k}: {best_individual}")
-            # print(Pk)
 
-    return best_individual
+    return best_individual, history
 
 
-GA(n_population=20, n_generation=10, verbose=True)
+best_individual, history = GA(n_population=23, n_generation=10, verbose=True)
+
+history
+plt.plot(range(len(history)), [individual.fitness for individual in history])
 
 # + tags=[]
-GA(n_population=20, n_generation=10, greedy_rate=1 / 5, verbose=True)
+best_individual, history = GA(
+    n_population=20, n_generation=10, greedy_rate=1 / 5, verbose=True
+)
 # -
 
-
+history
