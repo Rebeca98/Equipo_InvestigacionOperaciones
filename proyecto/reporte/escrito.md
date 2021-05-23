@@ -1,49 +1,40 @@
 ---
-title: Prueba
+title: |
+	![](figs/membrete-ITAM.pdf)
+	Reporte IDO
 author:
 - Juanito
 - Alonso
 - Rebe
 bibliography: refs.bib
-...
-
----
+geometry:
+- margin=2cm
+biblio-style: alphabetic
+biblatexoptions: [backend=biber, citestyle=alphabetic]
 header-includes:
+  - \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
   - \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
+  - \usepackage[utf8]{inputenc}
   - \SetKwRepeat{Do}{do}{while}
   - \usepackage{mathtools}
----
+  - \lstset{language=Python,
+	basicstyle=\ttfamily\small,
+	numberstyle={\tiny \color{black}},
+	backgroundcolor=\color{backcolour},
+	breaklines=true,
+	numbers=left,
+	keywordstyle=\color{blue},
+	inputencoding=utf8,
+	commentstyle=\color{gray}}
+...
 
-# Implementación
+# Marco teórico
 
-El algoritmo Simplex modificado que decidimos implementar es el conocido
-como el método de la gran M. Con esta implementación podemos resolver
-cualquier Problema de Programación Lineal (PPL) bien definido, con el
-origen incluido o exluido del polítopo factible. Elegimos el método de
-la gran M en vez de las dos fases por su facilidad de implementación, y
-dado que al ser una implementación computacional, manipular una M
-considerablemente grande no afecta la velocidad de ejecución puesto que
-en el estándar IEEE de tipo de datos *float*, la multiplicación entre
-números toma el mismo tiempo sin importar el tamaño del número, lo cual
-nos permitió elegir M suficientemente grande para asegurar que el método
-fuese exitoso.
+## Formulación como problema de programación lineal
 
-Para implementar el algoritmo Simplex dividimos el algoritmo en pequeñas
-subrutinas, cada una independiente de las demás, siguiendo la filosofía
-de diseño Unix. Para referirnos a cada una de estas subrutinas,
-escribimos su nombre en `este formato` para acentuar su papel como
-programas.
+## Algoritmos genéticos
 
-Cabe mencionar que por brevedad, reducimos la cantidad de detalles
-presentados en el pseudocódigo que mostramos a continuación. Para más
-detalles, se puede consultar el código que se entrega con el proyecto.
-
-## Pivoteo
-
-Para el proceso básico de identificar pivotes según la regla de Bland, y
-después hacer un uno principal en el pivote identificado sobre la tabla,
-usamos dos subrutinas: una que encuentra el pivote y otra que hace la
-operación de pivoteo.
+Quiero citar a [@jaketae] asi con este comando pero no se deja.
 
 \begin{algorithm}[H]
 \KwResult{ individuo más apto de $P_k$ }
@@ -51,9 +42,7 @@ operación de pivoteo.
 $k \coloneqq 0$\\
 $P_k \coloneqq $ población de $n$ individuos generados al azar; \\
 \textbf{Evaluar} $P_k:$\\
-\Do{el \underline{fitness} del individuo más apto en $P_k$ no sea
-lo
-suficientemente bueno}{
+\Do{el \underline{fitness} del individuo más apto en $P_k$ no sea lo suficientemente bueno}{
 	 \textbf{Crear generación $k+1$}\;
 	 \textbf{1. Copia:}\;
 	 Seleccionar $ (1-\chi) \times  n$ miembros de $P_k$ e insertar en
@@ -71,23 +60,26 @@ suficientemente bueno}{
 \caption{GA($ n,\chi,\mu$) }
 \end{algorithm}
 
-El algoritmo de pivoteo está inspirado en la idea de una factorización
-LU "incompleta". Calcular la factorización LU equivale a encontrar una
-matriz L que encodifica todo el proceso de pivoteo del Gauss-Jordan.
-Usamos una estrategia similar pero para un solo pivote.
+## Vecinos más cercanos
 
-Como se puede ver, no hay ningúna estructura de repetición en
-`pivotea`.
-Aprovechamos las propiedades de las matrices elementales y las
-optimizaciones del lenguaje [Matlab]{.smallcaps} para hacer el algoritmo
-lo más rápido y eficiente posible al crear unos principales en un solo
-paso en vez de buscar entrada por entrada candidatos y hacer divisiones
-renglón por renglón[^1].
+\begin{algorithm}[H]
+\KwResult{Ruta elegida con vecinos más cercanos a partir de ciudad inicial}
+\textbf{Comenzamos con un conjunto de ciudades por visitar y un conjunto de visitados} \\
+$c_0 \leftarrow$ ciudad elegida al azar. \\
+$c_a \leftarrow c_0$ fijamos la ciudad actual. \\
+$V \leftarrow \varnothing$ ciudades visitadas \\
+$C \leftarrow \{ c_1, \ldots, c_n \}$ ciudades por visitar \\
+\While{$|V| \neq |C|$}
+{
+	$V \leftarrow V \cup \{c_a \}$ \\
+	$c^{*} \leftarrow \min\{d(c_a, c_i) \, | \, c_i \in C \setminus V \}$ \\
+	$c_a \leftarrow c^{*}$ \\
+}
+\caption{Algoritmo vecinos más cercanos}
+\end{algorithm}
 
-## Algoritmo Simplex
+# Resultados
 
-Con la subrutina `Simplexealo` implementamos el proceso de repetición
-del pivoteo hasta que se encuentra la tabla final, y además checamos las
-condiciones de terminación que nos permiten saber si el algoritmo
-Simplex terminó con soluciones óptimas, degeneradas, o si el polítopo
-factible del problema no está acotado.
+# Conclusión
+
+# Referencias

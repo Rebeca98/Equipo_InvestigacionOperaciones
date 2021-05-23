@@ -1,0 +1,8 @@
+output-file: reporte.pdf
+listings: true
+pdf-engine: latexmk
+cite-method: biblatex
+# citeproc: true
+table-of-contents: true
+number-sections: true
+bibliography: refs.bib
