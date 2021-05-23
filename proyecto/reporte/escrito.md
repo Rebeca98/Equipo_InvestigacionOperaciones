@@ -12,6 +12,8 @@ geometry:
 biblio-style: alphabetic
 biblatexoptions: [backend=biber, citestyle=alphabetic]
 header-includes:
+  - \usepackage{pgfplots}
+  - \usepackage{float}
   - \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
   - \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
   - \usepackage[utf8]{inputenc}
@@ -134,6 +136,11 @@ $C \leftarrow \{ c_1, \ldots, c_n \}$ ciudades por visitar \\
 \end{algorithm}
 
 # Resultados
+
+![Tours](figs/tours.pdf){width="\\textwidth"}
+
+
+![Disminucion de distancia de tour](figs/mejora.pdf){width="\\textwidth"}
 
 # Conclusión
 
