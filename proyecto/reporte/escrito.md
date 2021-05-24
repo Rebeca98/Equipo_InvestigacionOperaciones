@@ -45,6 +45,26 @@ header-includes:
 Planteamos el problema de encontrar un _tour_, es decir una ruta
 cerrada que pasa por todas las ciudades, sin repetir ninguna y
 regresando a la ciudad de origen como un problema de minimización.
+
+Definimos d_{ij} como la distancia entre las ciudades $i$ y $j$ y definimos x_{ij} = 1 si se visitó la ciudad j estando en la i. Por último, definimos V como el conjunto de ciudades que se van a visitar.
+
+Con esta información podemos formular el problema como el siguiente problema de programación líneal.
+
+\begin{equation}
+\min \sum_{i,j} d_{ij}x_{ij}
+\end{equation}
+
+Sujeto a:
+
+\begin{align*}
+	\text{Cada ciudad se visita a lo más una sola vez}\\
+	\sum_{i = 1, i\neq j}^n x_{ij} = 1  \\
+	\sum_{j = 1, i\neq j}^n x_{ij} = 1  \\
+	\text{Cada ciudad se visita exactamente una vez} \\
+	\sum_{i \in S}\sum_{j \in S} x_{ij} \geq 1, S\seteq V,\|S\| \geq 2\\
+	x_{ij} \in {0,1}
+\end{align*}
+
 Para el acercamiento mediante algoritmos genéticos planteamos lo
 siguiente para un individuo dado.
 
