@@ -18,18 +18,23 @@ biblatexoptions: [backend=biber, citestyle=alphabetic]
 header-includes:
   - \usepackage{float}
   - \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+  - \definecolor{backcolour}{RGB}{229, 229, 229}
+  - \definecolor{dark}{RGB}{46, 52, 64}
+  - \definecolor{mainblue}{RGB}{94, 129, 172}
+  - \definecolor{strgreen}{RGB}{163, 190, 140}
   - \usepackage[ruled,vlined,linesnumbered]{algorithm2e}
   - \usepackage[utf8]{inputenc}
   - \SetKwRepeat{Do}{do}{while}
   - \usepackage{mathtools}
   - \lstset{language=Python,
-	basicstyle=\ttfamily\small,
-	numberstyle={\tiny \color{black}},
+	basicstyle={\ttfamily\small \color{dark}},
+	numberstyle={\tiny \color{dark}},
 	backgroundcolor=\color{backcolour},
 	breaklines=true,
 	numbers=left,
-	keywordstyle=\color{blue},
+	keywordstyle=\color{mainblue},
 	inputencoding=utf8,
+	stringstyle=\color{strgreen},
 	commentstyle=\color{gray}}
 ...
 
@@ -45,7 +50,7 @@ siguiente para un individuo dado.
 
 Sea $G = [g_1, g_2, \ldots, g_n]$ el _genoma_ del individuo. El genoma
 se puede representar como una lista ordenada de números $g_i$ con $g_1
-\leq g_i \geq g_n$ que representan el índice dado de una ciudad. Cada
+\leq g_i \leq g_n$ que representan el índice dado de una ciudad. Cada
 ciudad tiene un índice único y lo usamos como su nombre. El conjunto
 $C$ es el conjunto de los índices de todas la ciudades.
 
@@ -53,7 +58,7 @@ Entonces, podemos formular el problema como el siguiente problema de
 programación lineal en forma estándar:
 
 \begin{equation}
-    \min = \sum_{i=1}^{n-1} \| C_i - C_{i+1} \| + \| C_n - C_1 \|
+	\min \sum_{i=1}^{n-1} \| C_i - C_{i+1} \| + \| C_n - C_1 \|
 \end{equation}
 
 Sujeto a:
@@ -101,7 +106,7 @@ Para trabajar con las características genotípicas de una población
 dotamos a cada individuo de un _genotipo_. En nuestra implementación
 éste se representa como una lista de índices de ciudades. En general,
 el genotipo es se puede representar como una cadena de bits que se
-manipul y muta.
+manipula y muta.
 
 ![](figs/gen.png){width="0.2*\textwidth"}
 
@@ -140,7 +145,6 @@ diversas formas de hacer un cruce, en nuestro algoritmo utilizamos el
 cruce de dos puntos.
 
 ![](figs/cross.png){width="0.5\textwidth"}
-
 La idea principal del cruce se basa en que si se toman dos individuos
 correctamente adaptados y se obtiene una descendencia que comparta
 genes de ambos, al compartir las características buenas de dos
@@ -221,6 +225,7 @@ cercanas sucesivamente hasta que no quede ninguna.
 Esta idea queda retratada en el siguiente algoritmo presentado como
 pseudocódigo:
 
+```{=tex}
 \begin{algorithm}[H]
 \KwResult{Ruta elegida con vecinos más cercanos a partir de ciudad
 inicial}
@@ -233,12 +238,13 @@ $C \leftarrow \{ c_1, \ldots, c_n \}$ ciudades por visitar \\
 \While{$|V| \neq |C|$}
 {
 	$V \leftarrow V \cup \{c_a \}$ \\
-	$c^{*} \leftarrow \min\{d(c_a, c_i) \, | \, c_i \in C \setminus V
+	$c^{*} \leftarrow \min\{d(c_a, c_i) \, | \, c_i \in C \backslash V
 	\}$ \\
 	$c_a \leftarrow c^{*}$ \\
 }
 \caption{Algoritmo vecinos más cercanos}
 \end{algorithm}
+```
 
 Cabe mencionar que para este trabajo, implementamos un algoritmo
 genético y otro híbrido con el propósito de comparar su desempeño en
@@ -266,7 +272,7 @@ realmente.
 # Resultados
 
 Para dar contexto, presentamos primero un mapa de el país
-seleccionada: Qatar.
+seleccionado: Qatar.
 
 ![Qatar](figs/qatar.pdf){width="0.75\\textwidth"}
 
@@ -287,7 +293,7 @@ En la figura siguiente, presentamos cómo evoluciona la distancia total
 del tour a medida que avanzan las generaciones.
 
 
-![Disminucion de distancia de
+![Disminución de distancia de
 tour](figs/mejora.pdf){width="0.85\\textwidth"}
 
 Algunas cosas resultan aparentes de la figura. Por ejemplo: se puede
@@ -303,17 +309,25 @@ del algoritmo híbrido es casi constante. Se empieza con una distancia
 muy buena, y la mutación y cruza puede hacer muy poco para mejorarla.
 Incluso después de 10 mil generaciones.
 
+En la siguiente tabla se presentan los resultados de la distancia
+total y las rutas propuestas en concreto.
+
+| Algoritmo          | Ciudad de inicio | Ciudad final | Distancia total |
+|--------------------|------------------|--------------|-----------------|
+| Algoritmo genético | 61               | 111          | 32,855.6        |
+| Algoritmo híbrido  | 35               | 0            | 11,330.3        |
+
 La siguiente figura es una comparación directa de la distancia del
 tour que proponen el algoritmo genético y el híbrido. Es clara la
 diferencia abismal.
 
-![Comparacion directa de las
+![Comparación directa de las
 distancias](figs/comparacion.pdf){width="0.65\\textwidth"}
 
 Finalmente, para hacer claro cómo se comparan en desempeño ambos
 algoritmos presentamos la siguiente gráfica que está dividida en 4
 subgráficas. Como sugieren los títulos, en la primera fila se
-encuentra la comparacion de los tours propuestos por el algoritmo
+encuentra la comparación de los tours propuestos por el algoritmo
 genético (izquierda) contra el algoritmo híbrido (derecha) ambos al
 final de 10,000 generaciones. En la fila de abajo, el análogo pero
 para apenas 10 generaciones.
@@ -333,6 +347,31 @@ mucho superiores a su contraparte, y además es claro que estas no
 mejoran de manera obvia bajo mutación incluso a través de varios miles
 de generaciones. Lo cual sugiere que eran rutas muy aceptables desde
 el inicio.
+
+Como adicional incluimos el tour completo a continuación.
+
+```python
+array([ 35,  58,  61,  81,  79,  86,  75,  74,  77,  71,  73,  68,  59,
+        56,  44,  28,  21,  27,  32,  17,  20,  23,  25,  16,  13,  10,
+        12,  22,  24,  70, 101, 102,  90,  92,  95,  94,  96,  91,  87,
+        82,  80,  78,  76,  69,  63,  67,  65,  66,  60,  57,  55,  52,
+        51,  47,  45,  40,  37,  39,  42,  46,  50,  38,  33,  30,  31,
+        29,  34,  41,  48,  54,  53,  43,  49,  36,  26,  11,   9,   8,
+         4,  14,  18,  72,  83,  99, 109, 111, 114, 115, 116, 120, 119,
+       127, 122, 123, 132, 134, 128, 130, 135, 147, 142, 154, 150, 146,
+       151, 152, 149, 143, 153, 156, 140, 138, 137, 141, 145, 148, 144,
+       139, 136, 133, 131, 126, 124, 125, 113, 112, 108, 118, 121, 117,
+       105, 104, 106, 107, 157, 158, 161, 166, 169, 170, 165, 159, 184,
+       179, 177, 180, 176, 183, 187, 190, 188, 191, 189, 186, 185, 182,
+       178, 171, 168, 175, 181, 193, 173, 172, 174, 167, 164, 192, 163,
+       162, 160, 155, 129, 110, 103, 100,  98,  93,  89,  88,  97,  85,
+		84,  64,  19,  62,  15,   7,   5,   3,   1,   2,   6,   0])
+```
+
+Parece ser que hay cierto orden a como se nos proporcionaron los datos
+de ciudades. El tour muestra una preferencia a escoger ciudades con
+índices consecutivos, lo cual sugiere que los datos estaban ordenados
+desde un inicio.
 
 # Conclusión
 
@@ -359,8 +398,6 @@ un óptimo desde la primera iteración y por el resto de las
 generaciones y mutaciones no mejora. Entonces no hace falta el
 componente genético y se puede lograr una solución satisfactoria con
 una sola aplicación del algoritmo de vecinos más cercanos.
-
-# Referencias
 
 # Código en python
 
