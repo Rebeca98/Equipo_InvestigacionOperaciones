@@ -17,6 +17,7 @@ biblio-style: alphabetic
 biblatexoptions: [backend=biber, citestyle=alphabetic]
 header-includes:
   - \usepackage{float}
+  - \usepackage{amssymb}
   - \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
   - \definecolor{backcolour}{RGB}{229, 229, 229}
   - \definecolor{dark}{RGB}{46, 52, 64}
@@ -60,8 +61,8 @@ Sujeto a:
 	\text{Cada ciudad se visita a lo más una sola vez}\\
 	\sum_{i = 1, i\neq j}^n x_{ij} = 1  \\
 	\sum_{j = 1, i\neq j}^n x_{ij} = 1  \\
-	\text{Cada ciudad se visita exactamente una vez} \\
-	\sum_{i \in S}\sum_{j \in S} x_{ij} \geq 1, S\seteq V,\|S\| \geq 2\\
+	\text{No se forman subcíclos} \\
+	\sum_{i \in S}\sum_{j \in S} x_{ij} \geq 1, S\subsetneq V,\|S\| \geq 2
 	x_{ij} \in {0,1}
 \end{align*}
 
